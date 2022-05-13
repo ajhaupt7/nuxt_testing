@@ -1,0 +1,43 @@
+query getUserAndPlans($username: String!) {
+  user: publicUser(username: $username) {
+    username
+    fullName
+    bio
+    image
+    isPublic
+    isVerified
+    followersCount
+    followingCount
+  }
+  userPlans: publicUserPlan(username: $username) {
+    plans {
+      key
+      slug
+      title
+      image
+      link
+      start {
+        utc
+      }
+      end {
+        utc
+      }
+      location {
+        name
+        address
+        city
+        state
+        coordinates {
+          latitude
+          longitude
+        }
+      }
+      attendingOrInterested {
+        username
+        fullName
+        image
+      }
+      attendingOrInterestedCount
+    }
+  }
+}

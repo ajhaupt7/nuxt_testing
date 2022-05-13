@@ -1,0 +1,1 @@
+export const defaultTitle = 'IRL Events';

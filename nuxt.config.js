@@ -16,6 +16,11 @@ export default {
     ]
   },
 
+  publicRuntimeConfig: {
+    API_URL: process.env.API_URL,
+    API_ENV: process.env.API_ENV,
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],
@@ -37,11 +42,24 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/apollo',
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
+
+  /**
+   * Apollo client configuration
+   */
+     apollo: {
+      clientConfigs: {
+        default: {
+          httpEndpoint: process.env.API_URL,
+        },
+      },
+    },
+  
 
   googleFonts: {
     families: {
