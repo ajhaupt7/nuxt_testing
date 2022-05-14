@@ -5,8 +5,6 @@
       :username="currentUsername" />
 
     <Nuxt class="flex-1" />
-
-    <AppFooter />
   </div>
 </template>
 

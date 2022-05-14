@@ -19,7 +19,7 @@
           v-if="username"
           class="absolute top-100 text-sm"
           :key="username"
-          v-text="username" />
+          v-text="`/${username}`" />
       </transition>
     </h1>
   </div>

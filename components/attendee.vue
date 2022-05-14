@@ -1,7 +1,7 @@
 <template>
   <div 
     :key="username" 
-    class="inline-block h-6 w-6 rounded-full ring-2 ring-white bg-cover bg-center flex items-center justify-center"
+    class="h-6 w-6 rounded-full ring-2 ring-white bg-cover bg-center inline-flex items-center justify-center"
     :class="backgroundColor"
     :style="{ backgroundImage: `url(${image})` }" 
     :alt="username">
