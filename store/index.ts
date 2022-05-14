@@ -1,13 +1,11 @@
-import { defaultTitle } from '~/config/default-title';
-
 interface State {
   appLogo: string;
-  appTitle: string;
+  currentUsername?: string;
 }
 
 export const state: () => State = () => ({
   appLogo: 'images/irl.png',
-  appTitle: defaultTitle,
+  currentUsername: undefined,
 })
 
 export const mutations = {
@@ -15,7 +13,7 @@ export const mutations = {
     state.appLogo = url;
   },
 
-  setAppTitle(state: State, title: string) {
-    state.appTitle = title;
+  setCurrentUsername(state: State, username?: string) {
+    state.currentUsername = username;
   }
 }

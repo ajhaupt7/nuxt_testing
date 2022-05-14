@@ -1,27 +1,39 @@
 import * as mockQuery from '~/apollo/mocks/get-user-and-plans.json';
 import getUserAndPlans from '~/apollo/queries/get-user-and-plans.gql';
+import advancedGetUserAndPlans from '~/apollo/queries/advanced-get-user-and-plans.gql';
 import { DocumentNode } from 'graphql'
 import { UserAndPlansResponse } from '~/apollo/types/user-and-plans-response';
 
 type Query = (options: { 
   query: DocumentNode; 
-  variables: { username: string } 
+  variables: { 
+    dateFilter?: string;
+    dateFilterOnEmpty?: string;
+    page?: number;
+    username: string
+  } 
 }) => Promise<{ data: any }>;
 
 export async function fetchUserAndPlans(
   username: string, 
   query: Query, 
-  useMockData: boolean,
+  options: { useMockData?: boolean, useAdvancedQuery?: boolean } = {},
 ): Promise<UserAndPlansResponse> {
-  if (useMockData) {
-    return mockQuery.data;
+  console.log({ query });
+  if (options.useMockData) {
+    return new Promise(resolve => {
+      setTimeout(() => resolve(mockQuery.data), 2000);
+    });
   }
 
   try {
     const { data } = await query({
-      query: getUserAndPlans,
+      query: options.useAdvancedQuery ? advancedGetUserAndPlans : getUserAndPlans,
       variables: {
-        username: username,
+        dateFilter: "upcoming",
+        dateFilterOnEmpty: "past",
+        page: 0,
+        username,
       },
     });
     
@@ -34,6 +46,8 @@ export async function fetchUserAndPlans(
       user: data.user,
     };
   } catch (e) {
-    throw e;
+    console.error(e);
+
+    return mockQuery.data;
   }
 }

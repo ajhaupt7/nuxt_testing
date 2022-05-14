@@ -1,27 +1,28 @@
 export interface Plan {
   key: string;
-  slug: string;
-  title: string;
-  image: string;
-  link: string;
-  start: {
+  slug?: string;
+  title?: string;
+  image?: string;
+  link?: string;
+  start?: {
     utc: string;
   };
-  end: {
+  end?: {
     utc: string;
   };
-  location: {
+  location?: {
     name: string | null;
     address: string | null;
     city: string | null;
     state: string | null;
     coordinates: string | null;
   };
-  attendingOrInterested: Attendee[];
-  attendingOrInterestedCount: number;
+  attendingOrInterested?: Attendee[];
+  attendingOrInterestedCount?: number;
+  description?: string;
 }
 
-interface Attendee {
+export interface Attendee {
   username: string;
   fullName: string;
   image: string;

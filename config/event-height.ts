@@ -1,0 +1,1 @@
+export const eventHeight = '5.25rem';

@@ -1,0 +1,118 @@
+query advancedGetUserAndPlans(
+  $username: String!
+  $page: Int
+  $dateFilter: String
+  $dateFilterOnEmpty: String
+) {
+  user: publicUser(username: $username) {
+    image
+    isPublic
+    isVerified
+  }
+  plans: publicUserPlan(
+    username: $username
+    page: $page
+    dateFilter: $dateFilter
+    dateFilterOnEmpty: $dateFilterOnEmpty
+  ) {
+    hasMore
+    dateFilter
+    plans {
+      ...BasePublicPlan
+      creator {
+        ...SimpleUser
+      }
+      flags {
+        actions
+        creator
+        chat
+      }
+      authorization {
+        ...PlanBaseAuthorization
+      }
+    }
+  }
+}
+
+fragment BasePublicPlan on Plan {
+  ...BasePlan
+  attendingOrInterested {
+    id
+    username
+    first
+    last
+    fullName
+    image
+  }
+  attendingOrInterestedCount
+}
+
+fragment BasePlan on Plan {
+  id
+  key
+  slug
+  title
+  image
+  link
+  shareUrl
+  start {
+    date
+    utc
+    timeSet
+    local
+  }
+  end {
+    date
+    utc
+    timeSet
+    local
+  }
+  location {
+    name
+    address
+    city
+    state
+    coordinates {
+      latitude
+      longitude
+    }
+  }
+  timezone
+  hashtags {
+    id
+    name
+  }
+  contentProvider {
+    id
+    name
+  }
+  accessLevels {
+    view
+    share
+  }
+}
+
+fragment SimpleUser on User {
+  id
+  username
+  first
+  last
+  fullName
+  image
+  isPublic
+  isVerified
+  followersCount
+  followingCount
+  followingStatus
+  bio
+}
+
+fragment PlanBaseAuthorization on PlanAuthorization {
+  attending
+  interested
+  invited
+  nextTime
+  accessLevel
+  invitationStatus
+  chatCount
+}
