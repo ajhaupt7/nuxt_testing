@@ -45,6 +45,14 @@ export default {
     '@nuxtjs/apollo',
   ],
 
+  target: 'static',
+
+  ssr: false,
+
+  generate: {
+    fallback: true
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
