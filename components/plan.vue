@@ -20,18 +20,18 @@
 
           <div class="min-w-0 flex-1 sm:px-4">
             <div v-if="title">
-              <p class="text-sm font-medium text-indigo-500 truncate">{{ title }}</p>
+              <p class="text-sm font-bold text-indigo-500 truncate">{{ title }}</p>
 
               <p 
                 v-if="start"
-                class="mt-2 flex items-center text-sm text-gray-500">
+                class="mt-2 flex items-center text-sm text-gray-400">
                 <span v-text="date" />
               </p>
             </div>
 
             <div v-else>
-              <p class="text-sm font-medium bg-gray-200 w-48 h-4 rounded-md animate-pulse">{{ title }}</p>
-              <p class="text-sm font-medium bg-gray-200 w-24 h-4 mt-4 rounded-md animate-pulse">{{ title }}</p>
+              <p class="bg-gray-200 w-48 h-4 rounded-md animate-pulse">{{ title }}</p>
+              <p class="bg-gray-200 w-24 h-4 mt-4 rounded-md animate-pulse">{{ title }}</p>
             </div>
           </div>
 
@@ -110,7 +110,11 @@ export default Vue.extend({
   },
   computed: {
     date(): string | null {
-      return getDateString(this.start.utc, this.end.utc);
+      if (!this.start) {
+        return null;
+      }
+
+      return getDateString(this.start.utc, this.end?.utc);
     },
   },
   methods: {

@@ -63,7 +63,7 @@ export default {
 
   googleFonts: {
     families: {
-      'IBM+Plex+Sans': true,
+      Outfit: true,
     }
   }
 }

@@ -15,30 +15,41 @@
         @before-enter="onBeforeEnter"
         @enter="onEnter"
         @leave="onLeave">
-        <Plan 
-          v-for="(plan, index) in plans"
-          :class="`min-h-[${eventHeight}]`"
-          :key="plan.key"
-          :data-index="index"
-          :description="plan.description"
-          :link="plan.link"
-          :image="plan.image"
-          :title="plan.title"
-          :end="plan.end"
-          :start="plan.start"
-          :attendees="plan.attendingOrInterested"
-          :total-attending="plan.attendingOrInterestedCount" />
+        <template v-if="plans.length">
+          <Plan 
+            v-for="(plan, index) in plans"
+            :class="`min-h-[${eventHeight}]`"
+            :key="plan.key"
+            :data-index="index"
+            :description="plan.description"
+            :link="plan.link"
+            :image="plan.image"
+            :title="plan.title"
+            :end="plan.end"
+            :start="plan.start"
+            :attendees="plan.attendingOrInterested"
+            :total-attending="plan.attendingOrInterestedCount" />
+        </template>
+
+        <template v-else>
+          <Plan 
+            v-for="i in 5"
+            :key="i" />
+        </template>
       </TransitionGroup>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { fetchUserAndPlans } from '~/services/fetch-user-and-plans';
 import Vue from 'vue';
 import { Plan } from '~/apollo/types/plan';
 import { User } from '~/apollo/types/user'
 import { eventHeight } from '~/config/event-height';
+import { UserAndPlansResponse } from '~/apollo/types/user-and-plans-response';
+import * as mockQuery from '~/apollo/mocks/get-user-and-plans.json';
+import getUserAndPlans from '~/apollo/queries/get-user-and-plans.gql';
+import advancedGetUserAndPlans from '~/apollo/queries/advanced-get-user-and-plans.gql';
 import gsap from 'gsap';
 
 export default Vue.extend({
@@ -50,7 +61,7 @@ export default Vue.extend({
   } {
     return {
       eventHeight,
-      plans: Array.from(Array(5).keys()).map(i => ({ key: i.toString() })),
+      plans:[],
       user: {},
     }
   },
@@ -58,11 +69,9 @@ export default Vue.extend({
     this.$store.commit('setCurrentUsername', this.$route.params.username);
   },
   async fetch() {
-    const data = await fetchUserAndPlans(
+    const data = await this.fetchUserAndPlans(
       this.$route.params.username, 
-      // @ts-ignore
-      this.$apollo.query,
-      { useMockData: true },
+      { useMockData: false },
     );
 
     this.$store.commit('setAppLogo', data.user.image);
@@ -73,6 +82,44 @@ export default Vue.extend({
   fetchOnServer: false,
   fetchKey: 'username-page-fetch',
   methods: {
+    // Would better fit in a standalone service eventually.
+    async fetchUserAndPlans(
+      username: string, 
+      options: { useMockData?: boolean, useAdvancedQuery?: boolean } = {},
+    ): Promise<UserAndPlansResponse> {
+      if (options.useMockData) {
+        return new Promise(resolve => {
+          setTimeout(() => resolve(mockQuery.data), 2000);
+        });
+      }
+
+      try {
+        // @ts-ignore
+        const { data } = await this.$apollo.query({
+          query: options.useAdvancedQuery ? advancedGetUserAndPlans : getUserAndPlans,
+          variables: {
+            dateFilter: "upcoming",
+            dateFilterOnEmpty: "past",
+            page: 0,
+            username,
+          },
+        });
+        
+        if (!data.user) {
+          throw new Error('No user found.');
+        }
+
+        return {
+          userPlans: data.userPlans,
+          user: data.user,
+        };
+      } catch (e) {
+        console.error(e);
+
+        return mockQuery.data;
+      }
+    },
+
     onAfterEnter(el: HTMLElement) {
       el.style.height = 'auto';
     },
